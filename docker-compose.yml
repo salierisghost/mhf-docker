@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  erupe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Erupe
+    volumes:
+      - ./Erupe:/Erupe

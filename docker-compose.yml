@@ -2,8 +2,30 @@ version: '3.8'
 services:
   erupe:
     build:
-      context: .
+      context: Build/.
       dockerfile: Dockerfile
     container_name: Erupe
     volumes:
       - ./Erupe:/Erupe
+    environment:
+      - ERUPE_HOST=${ERUPE_IP}
+      - ERUPE_DB_HOST=${ERUPE_DB_IP}
+      - ERUPE_DB_USERNAME=${ERUPE_DB_USER}
+      - ERUPE_DB_PASSWORD=${ERUPE_DB_USER}
+    ports:
+      - 53312
+      - 53310
+      - 54001-54008
+
+  db:
+    image: postgres:15.1-alpine
+    volumes:
+     - erupe-db:/var/lib/postgresql/data
+    environment:
+     - POSTGRES_PASSWORD=${PG_PASSWORD}
+    ports:
+     - 5432
+    restart: unless-stopped
+  
+volumes:
+  erupe-db:

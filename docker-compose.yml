@@ -5,6 +5,8 @@ services:
       context: Build/.
       dockerfile: Dockerfile
     container_name: Erupe
+    depends_on:
+      - db
     volumes:
       - ./Erupe:/Erupe
     environment:
@@ -26,6 +28,6 @@ services:
     ports:
      - 5432
     restart: unless-stopped
-  
+
 volumes:
   erupe-db:

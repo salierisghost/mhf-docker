@@ -9,8 +9,8 @@ echo $ERUPE_DIR
 ERUPE_REPO="ZeruLight/Erupe"                                                                    # Default Repo
 ERUPE_GIT="https://github.com/${ERUPE_REPO}"                                                    # Change this if they ever leave Github
 ERUPE_VERSION="v9.2.0"                                                                          # Latest version as of 13/12/20231
-ERUPE_URL=("$ERUPE_GIT" "$ERUPE_REPO" "/releases/download" "$ERUPE_VERSION" "/Linux-amd64.zip") # Compiled binary
-ERUPE_CHECK_URL="https://api.github.com/repos/$ERUPE_REPO/releases/latest"
+ERUPE_URL="${ERUPE_GIT}/releases/download/${ERUPE_VERSION}/Linux-amd64.zip"         # Compiled binary
+ERUPE_CHECK_URL="https://api.github.com/repos/${ERUPE_REPO}/releases/latest"
 ERUPE_BINARY_REPO_URL="https://files.catbox.moe/xf0l7w.7z"                                      # From the Erupe repo
 
 echo $ERUPE_REPO
@@ -28,11 +28,15 @@ function get_latest_release() {
 
 function download_and_unzip() {
     local url="$1"
+    echo "URL: $url"
+    local extension="${url##*.}"
     local target="$2"
+    echo "Target: $target"
     local tmpPath="/tmp/file.zip"
+    echo "/tmp path: $tmpPath"
 
-    curl "$binUrl" --output "$tmpPath"
-    unzip "$tmpPath" "$target"
+    curl --location "$url" --output "$tmpPath"
+    7za x -y "$tmpPath" -o"$target"
 
     rm "$tmpPath"
 }
@@ -46,9 +50,12 @@ function main() {
         echo "There's a new version of Erupe: ${latest_version}"
     fi
 
-    if [[ ! -e $("$ERUPE_DIR/erupe-ce") ]]; then
-        download_and_unzip "$ERUPE_URL" "$ERUPE_DIR"
-        download_and_unzip "$ERUPE_BINARY_REPO_URL" "$ERUPE_DIR/bin"
+    if [[ ! -e $("${ERUPE_DIR}/erupe-ce") ]]; then
+        echo "Downloading new repo"
+        download_and_unzip "$ERUPE_URL" "${ERUPE_DIR}/."
+        download_and_unzip "$ERUPE_BINARY_REPO_URL" "${ERUPE_DIR}"
+    else
+        echo "Found existing repo"
     fi
 }
 
@@ -64,6 +71,6 @@ function main() {
 #    download_and_unzip "$ERUPE_BINARY_REPO_URL" "$ERUPE_DIR/bin"
 #fi
 
-
+main
 
 exec supervisord -c /supervisord.conf

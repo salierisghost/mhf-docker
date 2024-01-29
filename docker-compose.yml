@@ -10,10 +10,7 @@ services:
     volumes:
       - ./Erupe:/Erupe
     environment:
-      - ERUPE_HOST=${ERUPE_IP}
-      - ERUPE_DB_HOST=${ERUPE_DB_IP}
-      - ERUPE_DB_USERNAME=${ERUPE_DB_USER}
-      - ERUPE_DB_PASSWORD=${ERUPE_DB_PASSWORD}
+      - ERUPE_HOST=127.0.0.1
     ports:
       - 53312
       - 53310
@@ -25,7 +22,7 @@ services:
     volumes:
      - erupe-db:/var/lib/postgresql/data
     environment:
-     - POSTGRES_USER=${ERUPE_DB_USER}
+     - POSTGRES_USER=${ERUPE_DB_USERNAME}
      - POSTGRES_PASSWORD=${ERUPE_DB_PASSWORD}
     ports:
      - 5432

@@ -53,12 +53,14 @@ function main() {
 
     if [[ ! -e $("${ERUPE_DIR}/erupe-ce") ]]; then
         echo "Downloading new repo"
-        download_and_unzip "$ERUPE_URL" "${ERUPE_DIR}/."
-        prep_install
+        #download_and_unzip "$ERUPE_URL" "${ERUPE_DIR}/."
         #download_and_unzip "$ERUPE_BINARY_REPO_URL" "${ERUPE_DIR}"
+        prep_install
     else
         echo "Found existing repo"
     fi
+
+    /usr/bin/supervisord -c /supervisord.conf
 }
 
 #if [[ ! -e $($ERUPE_DIR "/main.go") ]]; then
@@ -76,8 +78,18 @@ function main() {
 function prep_install() {
     mkdir "$ERUPE_DIR/logs"
     chmod 770 "$ERUPE_DIR/erupe-ce"
+    #prep_config
+}
+
+function prep_config() {
+    # Modifying server IP address with selected IP
+    sed --regexp-extended 's/"Host": "127.0.0.1",/"Host": "$ERUPE_HOST"/' $ERUPE_DIR/config.json
+
+    # Modify database credentials
+    sed "s/\"Host\": \"localhost",/\"Host\": \"$ERUPE_DB_HOST\"/" $ERUPE_DIR/config.json
+    sed "s/\"User\": \"postgres",/"User": "$ERUPE_DB_USERNAME"/' $ERUPE_DIR/config.json
+    sed "s/\"Password\": \"\",/"Password": "$ERUPE_DB_PASSWORD"/' $ERUPE_DIR/config.json
+    sed "s/\"Database\": \"erupe\",/"Password": "$ERUPE_DB_NAME"/' $ERUPE_DIR/config.json
 }
 
 main
-
-/usr/bin/supervisord -c /supervisord.conf

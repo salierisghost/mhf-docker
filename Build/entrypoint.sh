@@ -39,6 +39,7 @@ function download_and_unzip() {
     7za x -y "$tmpPath" -o"$target"
 
     rm "$tmpPath"
+    echo "Extracted $url"
 }
 
 function main() {
@@ -53,7 +54,8 @@ function main() {
     if [[ ! -e $("${ERUPE_DIR}/erupe-ce") ]]; then
         echo "Downloading new repo"
         download_and_unzip "$ERUPE_URL" "${ERUPE_DIR}/."
-        download_and_unzip "$ERUPE_BINARY_REPO_URL" "${ERUPE_DIR}"
+        prep_install
+        #download_and_unzip "$ERUPE_BINARY_REPO_URL" "${ERUPE_DIR}"
     else
         echo "Found existing repo"
     fi
@@ -71,6 +73,11 @@ function main() {
 #    download_and_unzip "$ERUPE_BINARY_REPO_URL" "$ERUPE_DIR/bin"
 #fi
 
+function prep_install() {
+    mkdir "$ERUPE_DIR/logs"
+    chmod 770 "$ERUPE_DIR/erupe-ce"
+}
+
 main
 
-exec supervisord -c /supervisord.conf
+/usr/bin/supervisord -c /supervisord.conf

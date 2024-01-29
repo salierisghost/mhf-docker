@@ -13,18 +13,20 @@ services:
       - ERUPE_HOST=${ERUPE_IP}
       - ERUPE_DB_HOST=${ERUPE_DB_IP}
       - ERUPE_DB_USERNAME=${ERUPE_DB_USER}
-      - ERUPE_DB_PASSWORD=${ERUPE_DB_USER}
+      - ERUPE_DB_PASSWORD=${ERUPE_DB_PASSWORD}
     ports:
       - 53312
       - 53310
       - 54001-54008
+    restart: unless-stopped
 
   db:
     image: postgres:15.1-alpine
     volumes:
      - erupe-db:/var/lib/postgresql/data
     environment:
-     - POSTGRES_PASSWORD=${PG_PASSWORD}
+     - POSTGRES_USER=${ERUPE_DB_USER}
+     - POSTGRES_PASSWORD=${ERUPE_DB_PASSWORD}
     ports:
      - 5432
     restart: unless-stopped

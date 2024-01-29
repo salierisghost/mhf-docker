@@ -81,6 +81,10 @@ function prep_install() {
     #prep_config
 }
 
+function prep_database() {
+    psql -U "$ERUPE_DB_USERNAME" -d erupe -f "$ERUPE_DIR/bundled-schema/*" -W
+}
+
 function prep_config() {
     # Modifying server IP address with selected IP
     sed --regexp-extended 's/"Host": "127.0.0.1",/"Host": "$ERUPE_HOST"/' $ERUPE_DIR/config.json

@@ -8,7 +8,7 @@ COPY entrypoint.sh /entrypoint.sh
 COPY supervisord.conf /supervisord.conf
 
 RUN apt update && \
-    apt install -y supervisor p7zip-full && \
+    apt install -y supervisor p7zip-full postgresql-client && \
     mkdir /Erupe && \
     mkdir -p /var/log/supervisord && \
     mkdir -p /var/run/supervisord && \
